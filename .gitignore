@@ -1,0 +1,40 @@
+# 構建目錄
+build/
+cmake-build-*/
+
+# 可執行文件
+*.exe
+StockQuery
+StockQuery.exe
+
+# IDE 檔案
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+# 編譯產物
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# CMake 快取
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# 日誌檔案
+*.log
+
+# 作業系統檔案
+.DS_Store
+Thumbs.db

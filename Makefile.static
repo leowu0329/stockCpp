@@ -1,0 +1,47 @@
+# Makefile for StockQuery - 強制靜態連結版本
+# 需要先安裝靜態版本的 libcurl
+
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2
+TARGET = StockQuery
+SRC = main.cpp
+
+# 檢查作業系統
+UNAME_S := $(shell uname -s)
+
+# 根據作業系統設定連結庫
+ifeq ($(UNAME_S),Linux)
+    LIBS = -lcurl
+    STATIC_FLAGS =
+endif
+ifeq ($(UNAME_S),Darwin)
+    LIBS = -lcurl
+    STATIC_FLAGS =
+endif
+ifeq ($(OS),Windows_NT)
+    # Windows: 強制靜態連結
+    # 使用 pkg-config 獲取 libcurl 的連結選項（如果可用）
+    ifneq ($(shell which pkg-config 2>/dev/null),)
+        CURL_LIBS := $(shell pkg-config --libs --static libcurl 2>/dev/null)
+        ifneq ($(CURL_LIBS),)
+            LIBS = $(CURL_LIBS) -lws2_32 -lwinmm
+        else
+            # 手動指定靜態庫路徑和依賴
+            LIBS = -L/mingw64/lib -lcurl -lws2_32 -lwinmm -lcrypt32 -lssl -lcrypto -lz -lidn2 -lunistring -lnghttp2 -lpsl -lbrotlidec -lbrotlicommon -lssh2 -lzstd
+        endif
+    else
+        # 手動指定靜態庫路徑和依賴
+        LIBS = -L/mingw64/lib -lcurl -lws2_32 -lwinmm -lcrypt32 -lssl -lcrypto -lz -lidn2 -lunistring -lnghttp2 -lpsl -lbrotlidec -lbrotlicommon -lssh2 -lzstd
+    endif
+    STATIC_FLAGS = -static -static-libgcc -static-libstdc++
+endif
+
+INCLUDES = -I./include
+
+$(TARGET): $(SRC)
+	$(CXX) $(CXXFLAGS) $(STATIC_FLAGS) $(INCLUDES) -o $(TARGET) $(SRC) $(LIBS)
+
+clean:
+	rm -f $(TARGET) $(TARGET).exe
+
+.PHONY: clean
